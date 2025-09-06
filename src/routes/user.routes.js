@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { logoutUser, loginUser, registerUser } from "../controllers/user.controller.js"
+import { logoutUser, loginUser, registerUser, refreshAccessToken } from "../controllers/user.controller.js"
 import { upload } from "../middlewares/multer.middleware.js"
 import { verifyJWT } from "../middlewares/auth.middleware.js"
 
@@ -24,5 +24,8 @@ router.route("/login").post(loginUser)
 
 //secured routes
 router.route("/logout").post(verifyJWT, logoutUser)
+router.route("/refreshToken").post(refreshAccessToken) //not used verifyJWT middleware coz we already verified it in the controller itself
+
+
 
 export default router
