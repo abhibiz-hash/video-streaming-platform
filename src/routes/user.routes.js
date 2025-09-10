@@ -1,5 +1,16 @@
 import { Router } from "express"
-import { logoutUser, loginUser, registerUser, refreshAccessToken } from "../controllers/user.controller.js"
+import {
+    logoutUser,
+    loginUser,
+    registerUser,
+    refreshAccessToken,
+    changeCurrentPassword,
+    getCurrentUser,
+    updateAccountDetails,
+    updateUserAvatar,
+    getUserChannelProfile,
+    getWatchHistory
+} from "../controllers/user.controller.js"
 import { upload } from "../middlewares/multer.middleware.js"
 import { verifyJWT } from "../middlewares/auth.middleware.js"
 
@@ -25,7 +36,16 @@ router.route("/login").post(loginUser)
 //secured routes
 router.route("/logout").post(verifyJWT, logoutUser)
 router.route("/refreshToken").post(refreshAccessToken) //not used verifyJWT middleware coz we already verified it in the controller itself
+router.route("/change-password").post(verifyJWT, changeCurrentPassword)
+router.route("/current-user").get(getCurrentUser)
+router.route("/current-user").get(getCurrentUser)
+router.route("/update-account").patch(verifyJWT, updateAccountDetails)
 
+router.route("/avatar").patch(verifyJWT, upload.single("avatar"), updateUserAvatar)
+router.route("/cover-image").patch(verifyJWT, upload.single("coverImage"), updateUserAvatar)
+
+router.route("/channel/:username").get(getUserChannelProfile)
+router.route("/history").get(verifyJWT, getWatchHistory)
 
 
 export default router
