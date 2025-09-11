@@ -336,7 +336,7 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
                 channelsSubscribedToCount: {
                     $size: "$subscribedTo"
                 },
-                isSubscriber: { //this is to tell frontend if the user seeing the channel profile is subscribed to it or not
+                isSubscribed: { //this is to tell frontend if the user seeing the channel profile is subscribed to it or not
                     $cond: {
                         if: { $in: [req.user?._id, "$subscribers.subscriber"] },
                         then: true,
@@ -351,7 +351,7 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
                 username: 1,
                 subscribersCount: 1,
                 channelsSubscribedToCount: 1,
-                isSubscriber: 1,
+                isSubscribed: 1,
                 avatar: 1,
                 coverImage: true,
                 email: 1
@@ -403,7 +403,7 @@ const getWatchHistory = asyncHandler(async (req, res) => {
                     },
                     {
                         $addFields: {
-                            $first: "$owner"
+                            owner: { $first: "$owner" }
                         }
                     }
                 ]
