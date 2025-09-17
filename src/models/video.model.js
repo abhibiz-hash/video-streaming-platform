@@ -4,34 +4,46 @@ import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2"
 const videoSchema = new Schema(
     {
         videoFile: {
-            type: String, //cloudinary link
-            required: [true, "Video file link is required"]
+            url: {
+                type: String,
+                required: true
+            },
+            public_id: {
+                type: String,
+                required: true
+            }
         },
         thumbnail: {
-            type: String, //cloudinary link
-            required: [true, "Thumbnail is required"]
+            url: {
+                type: String,
+                required: true
+            },
+            public_id: {
+                type: String,
+                required: true
+            }
         },
         title: {
-            type: String, 
+            type: String,
             required: [true, "Title is required"]
         },
         description: {
-            type: String, 
+            type: String,
             required: [true, "Description is required"]
         },
         duration: {
-            type: Number, 
+            type: Number,
             required: true
         },
-        views:{
-            type:Number,
-            default:0,
+        views: {
+            type: Number,
+            default: 0,
         },
-        isPublished:{
-            type:Boolean,
-            default:true
+        isPublished: {
+            type: Boolean,
+            default: true
         },
-        owner:{
+        owner: {
             type: Schema.Types.ObjectId,
             ref: "User"
         }
