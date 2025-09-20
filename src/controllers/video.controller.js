@@ -3,6 +3,7 @@ import { ApiResponse } from "../utils/apiResponse.js"
 import { asyncHandler } from "../utils/asyncHandler.js"
 import { uploadOnCloudinary } from "../utils/cloudinary.js"
 import { Video } from "../models/video.model.js"
+import mongoose from "mongoose"
 
 
 
@@ -102,6 +103,38 @@ const togglePublishStatus = asyncHandler(async (req, res) => {
     const { videoId } = req.params
 })
 
+const updateViewCount = asyncHandler(async (req, res) => {
+    try {
+        const { video_id } = req.params
+        if (!video_id) throw new ApiError(404, "Video not found")
+
+        const videoId = mongoose.Types.ObjectId(video_id)
+
+        const video = await Video.findByIdAndUpdate(
+            videoId,
+            { $inc: { views: 1 } },
+            { new: true }
+        )
+        if (!video) {
+            throw new ApiError(404, "Video not found ")
+        }
+        return res
+            .status(200)
+            .json(new ApiResponse(200, video, "View count updated"))
+    } catch (error) {
+        console.error("Error updating view count: ", error)
+        return res
+            .status(error.statusCode || 500)
+            .json(
+                new ApiResponse(
+                    error.status || 500,
+                    error.response || "Error updating view count"
+                )
+            )
+    }
+})
+
 export {
-    publishAVideo
+    publishAVideo,
+    updateViewCount
 }
