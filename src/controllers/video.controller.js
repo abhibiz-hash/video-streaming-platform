@@ -4,6 +4,7 @@ import { asyncHandler } from "../utils/asyncHandler.js"
 import { uploadOnCloudinary } from "../utils/cloudinary.js"
 import { Video } from "../models/video.model.js"
 import mongoose from "mongoose"
+import { User } from "../models/user.model.js"
 
 
 
@@ -76,11 +77,59 @@ const publishAVideo = asyncHandler(async (req, res) => {
             .json(
                 new ApiResponse(
                     error.statusCode || 500,
+                    {},
                     error.message || "Something went wrong while publishsing the video"
                 )
             )
     }
 
+})
+
+const getchannelVideos = asyncHandler(async (req, res) => {
+    try {
+        const { username } = req.params
+        if (!username) {
+            throw new ApiError(400, "Username missing...")
+        }
+
+        const user = User.findOne({ username })
+        if (!user) {
+            throw new ApiError(404, "No User Found.")
+        }
+
+        const findChannelVideos = await Video.aggregate([
+            {
+                $match: {
+                    owner: user._id
+                }
+            }
+        ])
+
+        return res
+            .status(200)
+            .json(
+                new ApiResponse(
+                    200,
+                    findChannelVideos,
+                    "Videos fetched successfully!"
+                )
+            )
+    } catch (error) {
+        console.error(
+            "Error Occurred in Fetching the channel videos :: ",
+            error
+        )
+
+        return res
+            .status(error.statusCode || 500)
+            .json(
+                new ApiResponse(
+                    error.statusCode || 500,
+                    {},
+                    error.message || "Something went wrong while fetching the videos"
+                )
+            )
+    }
 })
 
 const getVideoById = asyncHandler(async (req, res) => {
@@ -128,6 +177,7 @@ const updateViewCount = asyncHandler(async (req, res) => {
             .json(
                 new ApiResponse(
                     error.status || 500,
+                    {},
                     error.response || "Error updating view count"
                 )
             )
