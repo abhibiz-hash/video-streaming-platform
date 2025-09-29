@@ -85,7 +85,6 @@ const publishAVideo = asyncHandler(async (req, res) => {
 
 })
 
-//Get all videos of a channel
 const getchannelVideos = asyncHandler(async (req, res) => {
     try {
         const { username } = req.params
